@@ -18,6 +18,7 @@ text_posts = {
     9: {"title": "Ninth Post", "content": "This is the ninth post."},
     10: {"title": "Tenth Post", "content": "This is the tenth post."},
 }
+
 # Query Parameter
 #Limit 
 @app.get("/posts")
@@ -28,7 +29,7 @@ def get_all_posts(limit: int ):
 
 
 @app.get("/posts/{id}")
-def get_post(id : int):
+def get_post(id : int) -> PostCreate:
     if id not in text_posts:
         raise HTTPException(status_code=404, detail="Post not found")
     return text_posts.get(id)
@@ -36,7 +37,12 @@ def get_post(id : int):
 
 
 
-
+# Specifies that we expect a PostCreate model in the request body using -> PostCreate
 @app.post("/posts")
-def create_post(post: PostCreate):
-    text_pots[max(text_posts.keys()) + 1] = post.dict()
+def create_post(post: PostCreate) -> PostCreate:
+    new_post = {"title": post.title, "content": post.content}
+    text_posts[max(text_posts.keys()) + 1] = new_post
+    return new_post
+
+
+
