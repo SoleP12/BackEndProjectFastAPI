@@ -2,12 +2,13 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
 from app.schemas import PostCreate
-from app.db import post, create_db_and_tables, get_async_session
+from app.db import Post, create_db_and_tables, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import asynccontextmanager
 
 
 @asynccontextmanager
+# Take in app which is an instance of FastAPI 
 async def lifespan(app: FastAPI):
     await create_db_and_tables()
     yield
@@ -16,43 +17,4 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-text_posts = {
-    1: {"title": "First Post", "content": "This is the first post."}, 
-    2: {"title": "Second Post", "content": "This is the second post."},
-    3: {"title": "Third Post", "content": "This is the third post."},
-    4: {"title": "Fourth Post", "content": "This is the fourth post."},
-    5: {"title": "Fifth Post", "content": "This is the fifth post."},
-    6: {"title": "Sixth Post", "content": "This is the sixth post."},
-    7: {"title": "Seventh Post", "content": "This is the seventh post."},
-    8: {"title": "Eighth Post", "content": "This is the eighth post."},
-    9: {"title": "Ninth Post", "content": "This is the ninth post."},
-    10: {"title": "Tenth Post", "content": "This is the tenth post."},
-}
-
-# Query Parameter
-#Limit 
-@app.get("/posts")
-def get_all_posts(limit: int ):  
-    if limit :
-        return list(text_posts.values())[:limit]
-    return text_posts
-
-
-@app.get("/posts/{id}")
-def get_post(id : int) -> PostCreate:
-    if id not in text_posts:
-        raise HTTPException(status_code=404, detail="Post not found")
-    return text_posts.get(id)
-
-
-
-
-# Specifies that we expect a PostCreate model in the request body using -> PostCreate
-@app.post("/posts")
-def create_post(post: PostCreate) -> PostCreate:
-    new_post = {"title": post.title, "content": post.content}
-    text_posts[max(text_posts.keys()) + 1] = new_post
-    return new_post
-
-
-
+# Endpoint to create a new post
