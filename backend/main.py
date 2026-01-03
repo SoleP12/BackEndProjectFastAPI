@@ -18,5 +18,22 @@ async def index(req: Request):
         context = {"request": req}
     )
 
+# Database setup
+@app.get("/database")
+async def database():
+    return {"message": "Database endpoint"}
+
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
-    uvicorn.run("main:app")
+    uvicorn.run("main:app", reload = True)
