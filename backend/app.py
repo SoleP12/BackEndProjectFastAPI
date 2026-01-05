@@ -60,8 +60,6 @@ async def delete_supplier(supplier_id: int):
     await Supplier.get(id = supplier_id).delete()
     return {"status": "ok", "data": f"Supplier with id {supplier_id} has been deleted."}
 
-
-
 # CRUD Operations for Product Model
 @app.post("/product/{supplier_id}")
 async def add_product(supplier_id: int, products_details: ProductIn_Pydantic):
@@ -71,8 +69,6 @@ async def add_product(supplier_id: int, products_details: ProductIn_Pydantic):
     product_obj = await Product.create(**products_details, supplied_by = supplier)
     response = await Product_Pydantic.from_tortoise_orm(product_obj)
     return {"status": "ok", "data": response}
-
-
 
 @app.get("/products")
 async def get_products():
@@ -84,14 +80,13 @@ async def specific_product(product_id: int):
     response = await Product_Pydantic.from_queryset_single(Product.get(id = id))
     return {"status": "ok", "data": response}
 
-
 @app.put("/product/{product_id}")
 async def update_product(id: int, update_info: ProductIn_Pydantic):
     product = await Product.get(product_id = product_id)
     update_info = update_info.dict(exclude_unset = True)
     product.name = update_info['name']
     product.quantity_in_stock = update_info['quantity_in_stock']
-    product.revenue += update_info['quantity'] * update_info['unit_price']
+    product.revenue += (update_info['quantity'] * update_info['unit_price']) + update_info['revenue']
     product.quantity_sold += update_info['quantity_sold']
     product.unit_price = update_info['unit_price']
     await product.save()
@@ -102,6 +97,10 @@ async def update_product(id: int, update_info: ProductIn_Pydantic):
 async def delete_product(product_id: int):
     await Product.filter(id == product_id).delete()
     return {"status": "ok"}
+
+
+
+
 
 
 
