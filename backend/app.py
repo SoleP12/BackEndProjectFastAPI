@@ -4,13 +4,18 @@ from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
+# Database setup
+from tortoise.contrib.fastapi import register_tortoise
+
 app = FastAPI(
-    swagger_ui_parameters={"customCssUrl": "/static/custom.css"}
+    swagger_ui_parameters={"customCssUrl": "/static/custom.css?v=1.0.0"}
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-templates = Jinja2Templates(directory=BASE_DIR / "templates")
-app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+
+templates = Jinja2Templates(directory=BASE_DIR / "frontend" / "templates")
+
+app.mount("/static", StaticFiles(directory=BASE_DIR / "frontend" / "static"), name="static")
 
 
 @app.get("/")
@@ -21,9 +26,13 @@ async def TemplateRender(req: Request):
     )
 
 # Database setup
-@app.get("/database")
-async def database():
-    return {"message": "Database endpoint"}
+register_tortoise(
+    app,
+    db_url="sqlite://db.sqlite3",
+    modules={"models": ["models"]},
+    generate_schemas=True,
+    add_exception_handlers=True,
+)
 
 
 
