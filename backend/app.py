@@ -16,14 +16,12 @@ from dotenv import dotenv_values
 # Load environment variables
 credentials = (dotenv_values(".env"))
 
-#  source ./venv/bin/activate Activate virtual enviromonet
-
 # Database setup
 from tortoise.contrib.fastapi import register_tortoise
 from models import Supplier_Pydantic, SupplierIn_Pydantic, Supplier, Product_Pydantic, ProductIn_Pydantic, Product
 
 app = FastAPI(
-    swagger_ui_parameters={"customCssUrl": "/static/custom.css?v=1.0.0"}
+    swagger_ui_parameters={"customCssUrl": "/static/custom.css?v=2.0.0"}
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,9 +76,9 @@ async def delete_supplier(supplier_id: int):
 @app.post("/product/{supplier_id}")
 async def add_product(supplier_id: int, products_details: ProductIn_Pydantic):
     supplier = await Supplier.get(id = supplier_id)
-    products = products_details.dict(exclude_unset = True)
-    products['revenue'] += products_detail['quantity_sold'] * products_details['unit_price']
-    product_obj = await Product.create(**products_details, supplied_by = supplier)
+    product_data = products_details.dict(exclude_unset=True)
+    product_data['revenue'] = product_data.get('revenue', 0) + product_data['quantity_sold'] * product_data['unit_price']
+    product_obj = await Product.create(**product_data, supplied_by=supplier)
     response = await Product_Pydantic.from_tortoise_orm(product_obj)
     return {"status": "ok", "data": response}
 
@@ -96,7 +94,7 @@ async def specific_product(product_id: int):
 
 @app.put("/product/{product_id}")
 async def update_product(product_id: int, update_info: ProductIn_Pydantic):
-    product = await Product.get(product_id = product_id)
+    product = await Product.get(id = product_id)
     update_info = update_info.dict(exclude_unset = True)
     product.name = update_info['name']
     product.quantity_in_stock = update_info['quantity_in_stock']
@@ -149,19 +147,15 @@ async def send_email(product_id: int, content: EmailContent):
     <h1>Test Now Complete</h1>
     """
     
-    @app.post("/email")
-    async def simple_send(email: EmailSchema) -> JSONResponse:
-        message = MessageSchema(
-            subject = content.subject,
-            recipients = supplier_email, #List of recipients
-            body = html,
-            subtype = "html"
-        )
-        fm = FastMail(conf)
-        await fm.send_message(message)
-        return {"status": "ok", "data": f"Email has been sent to supplier {supplier.name} for product {product.name}"}
-
-
+    message = MessageSchema(
+        subject = content.subject,
+        recipients = supplier_email, #List of recipients
+        body = html,
+        subtype = "html"
+    )
+    fm = FastMail(conf)
+    await fm.send_message(message)
+    return {"status": "ok", "data": f"Email has been sent to supplier {supplier.name} for product {product.name}"}
 
 
 
@@ -172,19 +166,22 @@ register_tortoise(
     modules={"models": ["models"]},
     generate_schemas=True,
     add_exception_handlers=True,
+
+
 )
 
-
-
-
-
-
-
-
-
-
-
+@app.get("/ProductSuppliers")
+async def ProductSuppliers(request: Request):
+    suppliers = await Supplier_Pydantic.from_queryset(Supplier.all())
+    products = await Product_Pydantic.from_queryset(Product.all())
+    return templates.TemplateResponse(
+        "ProductSuppliers.html",
+        {"request": request, "suppliers": suppliers, "products": products}
+    )
 
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload = True)
+
+
+# source ./venv/bin/activate Activate virtual enviromonet

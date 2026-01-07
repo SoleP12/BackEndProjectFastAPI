@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Database Entries</title>
+    <link rel = "stylesheet" href = "/static/styles2.css">
+</head>
+<body>
+    <h1>Suppliers</h1>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Company</th>
+            <th>Email</th>
+            <th>Phone</th>
+        </tr>
+        {% for supplier in suppliers %}
+        <tr>
+            <td>{{ supplier.id }}</td>
+            <td>{{ supplier.name }}</td>
+            <td>{{ supplier.company }}</td>
+            <td>{{ supplier.email }}</td>
+            <td>{{ supplier.phone }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h1>Products</h1>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Quantity in Stock</th>
+            <th>Quantity Sold</th>
+            <th>Unit Price</th>
+            <th>Revenue</th>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.quantity_in_stock }}</td>
+            <td>{{ product.quantity_sold }}</td>
+            <td>{{ product.unit_price }}</td>
+            <td>{{ product.revenue }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <button onclick="location.href='/'">Go Back</button>
+</body>
+</html>

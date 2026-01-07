@@ -1,0 +1,43 @@
+
+
+
+/*For Product Suppliers*/
+*{
+    background-color: rgb(3, 149, 252);
+    font-weight: bold;
+    text-align: center;
+    justify-content: center;
+}
+h1{
+    font-size: 48px;
+    color: rgb(255, 255, 255);
+    margin-top: 20px;
+}
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #fff;
+    border: 3px solid #999;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+}
+th,td{
+    font-size: 32px;
+    padding: 10px;
+    border-top: 2px solid #eee;
+    border-left: 2px solid #eee;
+    border-right: 2px solid #666;
+    border-bottom: 2px solid #666;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(#6a4cff, #3b1cff);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #2a14b8;
+}

@@ -5,11 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Tracker API</title>
     <link rel = "stylesheet" href = "/static/styles.css">
+    <link rel="stylesheet" href="/static/buttons.css">
 </head>
 <body>
-    <h1>FastAPI</h1>
-    <button onclick="location.href='/docs'">Go to API Documentation</button>
-    <button onclick="location.href='/database'">View Database Entries</button>
+    <style>
+        h1{
+            font-size: 80px;
+        }
+    </style>
+
+    <h1>FastAPI</h1> 
+    <!-- <button onclick="location.href='/docs'">Go to API Documentation</button> -->
+    <a href="/docs" style="text-decoration: none;">
+        <button class="button-78" role="button">
+            Go to API Documentation
+        </button>
+    </a>
+    <!-- <button onclick="location.href='/ProductSuppliers'">View Database Entries</button> -->
+    <a href="/ProductSuppliers" style="text-decoration: none;">
+        <button class="button-78" role="button">
+            View Database Entries
+        </button>
+    </a>
+
     
 </body>
 </html>

@@ -21,9 +21,6 @@ class Product(models.Model):
     # ForeignKey to Supplier
     supplied_by = fields.ForeignKeyField('models.Supplier', related_name='goods_supplied')
 
-# -----------------------------
-# Pydantic Models (after class definitions)
-# -----------------------------
 
 # Product
 Product_Pydantic = pydantic_model_creator(Product, name="Product")

@@ -1,24 +1,13 @@
+
 body {
-    background-color: #080000;
+    background-color: #080000 !important;
+    color: #ffffff !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
 }
 
-.swagger-ui .topbar {
-    background-color: #4CAF50;
+
+.swagger-ui {
+    background-color: #120026 !important;
+    color: #ffffff !important;
 }
-.swagger-ui .topbar a {
-    color: white;
-    font-weight: bold;
-}
-.swagger-ui .info {
-    background-color: #4c01fa;
-    border-radius: 8px;
-    padding: 15px;
-}
-.swagger-ui .opblock {
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-.swagger-ui .opblock-summary {
-    background-color: #1b03fa;
-    border-radius: 8px;
-}
+/* For Swagger UI customization Wont change for some reason*/
