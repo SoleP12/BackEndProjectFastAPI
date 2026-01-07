@@ -4,6 +4,20 @@ from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
+# email imports for fastAPI
+from fastapi import FastAPI, BackgroundTasks, UploadFile, File, Form
+from starlette.responses import JSONResponse
+from starlette.requests import Request
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from pydantic import BaseModel, EmailStr
+from typing import List
+from dotenv import dotenv_values
+
+# Load environment variables
+credentials = (dotenv_values(".env"))
+
+#  source ./venv/bin/activate Activate virtual enviromonet
+
 # Database setup
 from tortoise.contrib.fastapi import register_tortoise
 from models import Supplier_Pydantic, SupplierIn_Pydantic, Supplier, Product_Pydantic, ProductIn_Pydantic, Product
@@ -65,7 +79,7 @@ async def delete_supplier(supplier_id: int):
 async def add_product(supplier_id: int, products_details: ProductIn_Pydantic):
     supplier = await Supplier.get(id = supplier_id)
     products = products_details.dict(exclude_unset = True)
-    products_details['revenue'] += products_detail['quantity_sold'] * products_details['unit_price']
+    products['revenue'] += products_detail['quantity_sold'] * products_details['unit_price']
     product_obj = await Product.create(**products_details, supplied_by = supplier)
     response = await Product_Pydantic.from_tortoise_orm(product_obj)
     return {"status": "ok", "data": response}
@@ -77,11 +91,11 @@ async def get_products():
 
 @app.get("/product/{product_id}")
 async def specific_product(product_id: int):
-    response = await Product_Pydantic.from_queryset_single(Product.get(id = id))
+    response = await Product_Pydantic.from_queryset_single(Product.get(id = product_id))
     return {"status": "ok", "data": response}
 
 @app.put("/product/{product_id}")
-async def update_product(id: int, update_info: ProductIn_Pydantic):
+async def update_product(product_id: int, update_info: ProductIn_Pydantic):
     product = await Product.get(product_id = product_id)
     update_info = update_info.dict(exclude_unset = True)
     product.name = update_info['name']
@@ -95,11 +109,57 @@ async def update_product(id: int, update_info: ProductIn_Pydantic):
 
 @app.delete('/product/{product_id}')
 async def delete_product(product_id: int):
-    await Product.filter(id == product_id).delete()
+    await Product.filter(id = product_id).delete()
     return {"status": "ok"}
 
+class EmailSchema(BaseModel):
+    email: List[EmailStr]
+
+class EmailContent(BaseModel):
+    message: str
+    subject: str
+
+# Emailing Sending
+conf = ConnectionConfig(
+    MAIL_USERNAME = credentials["EMAIL"],
+    MAIL_PASSWORD = credentials["PASS"],
+    MAIL_FROM = credentials["EMAIL"],
+    MAIL_PORT = 587,
+    MAIL_SERVER = "smtp.gmail.com",
+    MAIL_TLS = True,
+    MAIL_SSL = False,
+    USE_CREDENTIALS = True,
+)
 
 
+@app.post("/email/{product_id}")
+async def send_email(product_id: int, content: EmailContent):
+    product = await Product.get(id = product_id)
+    supplier = await product.supplied_by 
+    supplier_email = [supplier.email]
+
+
+    html = f"""
+    <h1>Test From Fast API sent for product {product_id}</h1>
+    <br>
+    <p>{content.subject}</p>
+    <br>
+    <p>{content.message}</p>
+    <br>
+    <h1>Test Now Complete</h1>
+    """
+    
+    @app.post("/email")
+    async def simple_send(email: EmailSchema) -> JSONResponse:
+        message = MessageSchema(
+            subject = content.subject,
+            recipients = supplier_email, #List of recipients
+            body = html,
+            subtype = "html"
+        )
+        fm = FastMail(conf)
+        await fm.send_message(message)
+        return {"status": "ok", "data": f"Email has been sent to supplier {supplier.name} for product {product.name}"}
 
 
 
