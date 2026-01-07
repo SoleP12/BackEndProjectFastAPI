@@ -1,15 +1,7 @@
 {
-  "name": "FastAPI Backend",
+  "name": "FASTAPI-Backend",
   "image": "mcr.microsoft.com/devcontainers/python:3.11",
-  "workspaceFolder": "/workspaces/BackEndProjectFastAPI/backend",
-  "postStartCommand": "python -m venv .venv || true && . .venv/bin/activate && pip install -r requirements.txt",
-  "customizations": {
-    "vscode": {
-      "settings": {
-        "python.pythonPath": "/workspaces/BackEndProjectFastAPI/backend/.venv/bin/python",
-        "python.terminal.activateEnvironment": true
-      }
-    }
-  }
-}
 
+  "postCreateCommand": "cd /workspaces/BackEndProjectFastAPI/backend && source ./venv/bin/activate",
+  "postStartCommand": "pip install -r requirements.txt && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+}
