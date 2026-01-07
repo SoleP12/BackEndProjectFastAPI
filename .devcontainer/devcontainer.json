@@ -1,9 +1,0 @@
-{
-  "name": "FASTAPI-Backend",
-  "image": "mcr.microsoft.com/devcontainers/python:3.11",
-  "postCreateCommand": "cd /workspaces/BackEndProjectFastAPI/backend"
-}
-
-
-
-
