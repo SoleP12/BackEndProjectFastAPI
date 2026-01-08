@@ -1,6 +1,7 @@
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
 
+# Supplier Model that will hold supplier information
 class Supplier(models.Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=20)
@@ -8,7 +9,8 @@ class Supplier(models.Model):
     email = fields.CharField(max_length=100)
     phone = fields.CharField(max_length=15)
 
-
+# Product Model that will hold product information
+# We use ForeignKeyField to link each product to a specific supplier
 class Product(models.Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=30, nullable=False)
@@ -17,11 +19,11 @@ class Product(models.Model):
     unit_price = fields.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     revenue = fields.DecimalField(max_digits=20, decimal_places=3, default=0.00)
     
-    # ForeignKey to Supplier
     supplied_by = fields.ForeignKeyField('models.Supplier', related_name='goods_supplied')
 
 
-# Product
+#Create Pydantic models for Supplier and Product for data validation and serialization
+# meaning we wont have to duplicate code for data validation and serialization
 Product_Pydantic = pydantic_model_creator(Product, name="Product")
 ProductIn_Pydantic = pydantic_model_creator(Product, name="ProductIn", exclude_readonly=True)
 
