@@ -1,3 +1,4 @@
+# FastApi imports
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
@@ -13,10 +14,10 @@ from pydantic import BaseModel, EmailStr
 from typing import List
 from dotenv import dotenv_values
 
-# Load environment variables
+# Load environment variables from .env file which are not included in version control
 credentials = (dotenv_values(".env"))
 
-# Database setup
+# Database setup imports and models 
 from tortoise.contrib.fastapi import register_tortoise
 from models import Supplier_Pydantic, SupplierIn_Pydantic, Supplier, Product_Pydantic, ProductIn_Pydantic, Product
 
@@ -166,8 +167,6 @@ register_tortoise(
     modules={"models": ["models"]},
     generate_schemas=True,
     add_exception_handlers=True,
-
-
 )
 
 @app.get("/ProductSuppliers")
