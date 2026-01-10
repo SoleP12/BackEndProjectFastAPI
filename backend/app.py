@@ -6,20 +6,6 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 
-# email imports for fastAPI
-from fastapi import FastAPI, BackgroundTasks, UploadFile, File, Form
-from starlette.responses import JSONResponse
-from starlette.requests import Request
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
-from pydantic import BaseModel, EmailStr
-from typing import List
-from dotenv import dotenv_values
-
-
-# Load environment variables from .env file which are not included in version control
-credentials = (dotenv_values(".env"))
-
-
 # Database setup imports and models 
 from tortoise.contrib.fastapi import register_tortoise
 from models import Supplier_Pydantic, SupplierIn_Pydantic, Supplier, Product_Pydantic, ProductIn_Pydantic, Product
@@ -149,63 +135,6 @@ async def update_product(product_id: int, update_info: ProductIn_Pydantic):
 async def delete_product(product_id: int):
     await Product.filter(id = product_id).delete()
     return {"status": "ok"}
-
-
-# Create a class called EmailSchema that will hold a list of email addresses
-class EmailSchema(BaseModel):
-    email: List[EmailStr]
-
-
-# Create a class called EmailContent that will hold the message and subject of the email
-class EmailContent(BaseModel):
-    message: str
-    subject: str
-
-
-# Emailing Sending
-conf = ConnectionConfig(
-    MAIL_USERNAME = credentials["EMAIL"],
-    MAIL_PASSWORD = credentials["PASS"],
-    MAIL_FROM = credentials["EMAIL"],
-    MAIL_PORT = 587,
-    MAIL_SERVER = "smtp.gmail.com",
-    MAIL_STARTTLS = True,
-    MAIL_SSL_TLS = False,
-    USE_CREDENTIALS = True,
-)
-
-
-# Send email endpoint that will send an email to the supplier of a specific product
-@app.post("/email/{product_id}")
-async def send_email(product_id: int, content: EmailContent):
-    product = await Product.get(id = product_id)
-    if not product:
-        return {"status": "error", "message" : "Product not found"}
-    supplier = await product.supplied_by 
-    if not supplier:
-        return {"status": "error", "message" : "Supplier not found"}
-    supplier_email = [supplier.email]
-
-
-    html = f"""
-    <h1>Test From Fast API sent for product {product_id}</h1>
-    <br>
-    <p>{content.subject}</p>
-    <br>
-    <p>{content.message}</p>
-    <br>
-    <h1>Test Now Complete</h1>
-    """
-    # Set up the email message
-    message = MessageSchema(
-        subject = content.subject,
-        recipients = supplier_email, 
-        body = html,
-        subtype = "html"
-    )
-    fm = FastMail(conf)
-    await fm.send_message(message)
-    return {"status": "ok", "data": f"Email has been sent to supplier {supplier.name} for product {product.name}"}
 
 
 # Database setup using sqlite database used locally, has built in error handling and ORM exceptions
