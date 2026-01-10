@@ -25,3 +25,4 @@ Uvicorn – An ASGI server used to run the FastAPI application, providing high p
 Tortoise ORM – An asynchronous ORM that enables database interactions using Python models instead of raw SQL, fully leveraging async/await for non-blocking request handling
 
 Technologies Used ======================================================
+ 
