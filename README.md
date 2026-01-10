@@ -18,8 +18,6 @@ Technologies Used ======================================================
 
 FastAPI – A modern, high-performance web framework used to build RESTful APIs and handle communication between the backend and frontend. The project implements a Supplier and Product management system with full CRUD functionality.
 
-FastAPI-Mail – Used to send automated emails to suppliers, providing product details and supplier information.
-
 Jinja2 – Used for server-side HTML rendering and CSS templating, enabling dynamic pages within FastAPI routes.
 
 Uvicorn – An ASGI server used to run the FastAPI application, providing high performance, async concurrency, and hot-reloading during development.
