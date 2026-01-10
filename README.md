@@ -10,18 +10,15 @@
 4-  uvicorn app:app --reload
 
 This particular Project is designed to understand the fundamentals, constraints, and strengths of using FastAPI as a significant part of a developement project simulating real-world developement . 
+Technologies Used======================================================
 
-Technologies Used ---------------------------------------------------------
-FastAPI -- Web Framework for building web server and API. We use FastApi in order to communicate with responses and requests from the frontend/routes. We create a Supplier and Product system that focuses on CRUD operations.
+FastAPI – A modern, high-performance web framework used to build RESTful APIs and handle communication between the backend and frontend. The project implements a Supplier and Product management system with full CRUD functionality.
 
-FastApi-Email -- We use FastAPI email to send example emails to supliers and let them get the product and know who it is supplied by
+FastAPI-Mail – Used to send automated emails to suppliers, providing product details and supplier information.
 
-Jinja2 -- To add css templating to routes, I use Jinja2 which will render dynamic HTML content in our fast api routes.
+Jinja2 – Used for server-side HTML rendering and CSS templating, enabling dynamic pages within FastAPI routes.
 
-Uvicorn -- With uvicorn in combination with FastApi we are able to run FastApi on a server and take in requests. Allows for high performance, instant code changes, better concurrency, and less resource usage
+Uvicorn – An ASGI server used to run the FastAPI application, providing high performance, async concurrency, and hot-reloading during development.
 
-Tortoise ORM -- Allows for asycnhrononus object relational mapping which will allow us to use python code rather than SQL code to interact with our database. Tortoise works well with asynch/wait allowing for many requests without blocking
-
----------------------------------------------------------------------------
-
-
+Tortoise ORM – An asynchronous ORM that enables database interactions using Python models instead of raw SQL, fully leveraging async/await for non-blocking request handling.
+==========================================================================
