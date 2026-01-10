@@ -201,8 +201,8 @@ register_tortoise(
 )
 
 # Template rendering for ProductSuppliers.html that will display all suppliers and products from the database
-@app.get("/ProductSuppliers")
-async def ProductSuppliers(request: Request):
+@app.get("/AllProductSuppliers")
+async def allProductSuppliers(request: Request):
     suppliers = await Supplier_Pydantic.from_queryset(Supplier.all())
     products = await Product_Pydantic.from_queryset(Product.all())
     return templates.TemplateResponse(
@@ -210,9 +210,5 @@ async def ProductSuppliers(request: Request):
         {"request": request, "suppliers": suppliers, "products": products}
     )
 
-
 if __name__ == "__main__":
     uvicorn.run("main:app", reload = True)
-
-
-# source ./venv/bin/activate Activate virtual enviromonet

@@ -3,3 +3,4 @@ tortoise-orm
 uvicorn[standard]
 Jinja2
 fastapi-mail
+asyncpg
