@@ -1,5 +1,7 @@
 # BackEndProjectFastAPI
 
+0-  Open terminal
+
 1-  cd ./backend/
 
 <!-- Active virtual Enviroment if not created create uisng"python -m venv  . venv"  -->
