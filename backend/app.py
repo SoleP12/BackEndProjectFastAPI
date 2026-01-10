@@ -13,7 +13,7 @@ from models import Supplier_Pydantic, SupplierIn_Pydantic, Supplier, Product_Pyd
 
 # FastAPI app initialization with custom CSS for Swagger UI
 app = FastAPI(
-    title="Supplier and Product Management API"
+    title="Supplier and Product Management API" 
 )
 
 
