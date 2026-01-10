@@ -179,7 +179,11 @@ conf = ConnectionConfig(
 @app.post("/email/{product_id}")
 async def send_email(product_id: int, content: EmailContent):
     product = await Product.get(id = product_id)
+    if not product:
+        return {"status": "error", "message" : "Product not found"}
     supplier = await product.supplied_by 
+    if not supplier:
+        return {"status": "error", "message" : "Supplier not found"}
     supplier_email = [supplier.email]
 
 
