@@ -23,7 +23,8 @@ from models import Supplier_Pydantic, SupplierIn_Pydantic, Supplier, Product_Pyd
 
 # FastAPI app initialization with custom CSS for Swagger UI
 app = FastAPI(
-    swagger_ui_parameters={"customCssUrl": "/static/custom.css?v=2.0.0"}
+    swagger_ui_parameters={"customCssUrl": "/static/custom.css?v=2.0.0"},
+    title="Supplier and Product Management API",
 )
 
 #Returns the parent directory of the current file we use this to point to frontend files
@@ -201,8 +202,8 @@ register_tortoise(
 )
 
 # Template rendering for ProductSuppliers.html that will display all suppliers and products from the database
-@app.get("/AllProductSuppliers")
-async def allProductSuppliers(request: Request):
+@app.get("/ProductSuppliers")
+async def ProductSuppliers(request: Request):
     suppliers = await Supplier_Pydantic.from_queryset(Supplier.all())
     products = await Product_Pydantic.from_queryset(Product.all())
     return templates.TemplateResponse(
