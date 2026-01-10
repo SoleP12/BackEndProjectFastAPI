@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
+
 # email imports for fastAPI
 from fastapi import FastAPI, BackgroundTasks, UploadFile, File, Form
 from starlette.responses import JSONResponse
@@ -14,35 +15,38 @@ from pydantic import BaseModel, EmailStr
 from typing import List
 from dotenv import dotenv_values
 
+
 # Load environment variables from .env file which are not included in version control
 credentials = (dotenv_values(".env"))
+
 
 # Database setup imports and models 
 from tortoise.contrib.fastapi import register_tortoise
 from models import Supplier_Pydantic, SupplierIn_Pydantic, Supplier, Product_Pydantic, ProductIn_Pydantic, Product
 
+
 # FastAPI app initialization with custom CSS for Swagger UI
 app = FastAPI(
-    swagger_ui_parameters={"customCssUrl": "/static/custom.css?v=2.0.0"},
     title="Supplier and Product Management API",
 )
+
 
 #Returns the parent directory of the current file we use this to point to frontend files
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Create templates variable to point to the templates directory using BASE_DIR
 templates = Jinja2Templates(directory=BASE_DIR / "frontend" / "templates")
 
-# Mount the static files directory to serve CSS. This is where we will put our custom.css file for Swagger UI
-app.mount("/static", StaticFiles(directory=BASE_DIR / "frontend" / "static"), name="static")
 
-# Home Root that will render index.html that we created in the templates directory
+# Home Root that will render index.html that we created in the templates directory for the homepage
 @app.get("/")
 async def Template_Render(req: Request):
     return templates.TemplateResponse(
         name = "index.html",
-        context = {"request": req}
+        context = { "request": req}
     )
+
 
 # CRUD Operations for Supplier Model
 # Create Supplier endpoint that will add a new supplier to the database
@@ -55,6 +59,7 @@ async def add_supplier(supplier_info: SupplierIn_Pydantic):
     response = await Supplier_Pydantic.from_tortoise_orm(supplier_obj)
     return {"status": "ok", "data": response}
 
+
 # Supplier endpoint that will get all suppliers from the database
 # The function queries all Supplier objects and converts to 
 @app.get("/supplier")
@@ -62,12 +67,14 @@ async def get_all_suppliers():
     response = await Supplier_Pydantic.from_queryset(Supplier.all())
     return {"status": "ok", "data": response}
 
+
 # Returns a specific supplier based on the supplier_id passed in the URL
 # Query the database with the supplier_id and returns the supplier object as a response
 @app.get("/supplier/{supplier_id}")
 async def get_specific_supplier(supplier_id: int):
     response = await Supplier_Pydantic.from_queryset_single(Supplier.get(id = supplier_id))
     return {"status": "ok", "data": response}
+
 
 # Updates the supplier based on the supplier_id passed in the URL
 @app.put("/supplier/{supplier_id}")
@@ -105,17 +112,20 @@ async def add_product(supplier_id: int, products_details: ProductIn_Pydantic):
     response = await Product_Pydantic.from_tortoise_orm(product_obj)
     return {"status": "ok", "data": response}
 
+
 # Gets all products from teh database by queries all product objects
 @app.get("/products")
 async def get_products():
     response = await Product_Pydantic.from_queryset(Product.all())
     return {"status": "ok", "data": response}
 
+
 # Finds a specific product based on the product_id passed in the URL
 @app.get("/product/{product_id}")
 async def specific_product(product_id: int):
     response = await Product_Pydantic.from_queryset_single(Product.get(id = product_id))
     return {"status": "ok", "data": response}
+
 
 # Updates a specific product based upon the product_id passed in url
 # Creates temp variable update_info to hold the updated information passed in the request body
@@ -133,6 +143,7 @@ async def update_product(product_id: int, update_info: ProductIn_Pydantic):
     response = await Product_Pydantic.from_tortoise_orm(product)
     return {"status": "ok", "data": response}
 
+
 # Deletes specific product based on the product_id passed in the URL with delete query
 @app.delete('/product/{product_id}')
 async def delete_product(product_id: int):
@@ -143,6 +154,7 @@ async def delete_product(product_id: int):
 # Create a class called EmailSchema that will hold a list of email addresses
 class EmailSchema(BaseModel):
     email: List[EmailStr]
+
 
 # Create a class called EmailContent that will hold the message and subject of the email
 class EmailContent(BaseModel):
@@ -161,6 +173,7 @@ conf = ConnectionConfig(
     MAIL_SSL_TLS = False,
     USE_CREDENTIALS = True,
 )
+
 
 # Send email endpoint that will send an email to the supplier of a specific product
 @app.post("/email/{product_id}")
@@ -191,7 +204,6 @@ async def send_email(product_id: int, content: EmailContent):
     return {"status": "ok", "data": f"Email has been sent to supplier {supplier.name} for product {product.name}"}
 
 
-
 # Database setup using sqlite database used locally, has built in error handling and ORM exceptions
 register_tortoise(
     app,
@@ -200,6 +212,7 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True,
 )
+
 
 # Template rendering for ProductSuppliers.html that will display all suppliers and products from the database
 @app.get("/ProductSuppliers")
