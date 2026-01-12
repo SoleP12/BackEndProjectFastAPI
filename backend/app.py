@@ -110,7 +110,7 @@ async def add_product(supplier_id: int, products_details: ProductIn_Pydantic):
 
 
 
-# Gets all products from teh database by queries all product objects
+# Gets all products from the database by queries on all product objects
 @app.get("/products")
 async def get_all_products():
     response = await Product_Pydantic.from_queryset(Product.all())
