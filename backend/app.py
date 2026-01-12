@@ -1,4 +1,5 @@
 # FastApi imports
+from decimal import Decimal
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
@@ -61,12 +62,14 @@ async def get_all_suppliers():
     return {"status": "ok", "data": response}
 
 
+
 # Returns a specific supplier based on the supplier_id passed in the URL
 # Query the database with the supplier_id and returns the supplier object as a response
 @app.get("/supplier/{supplier_id}")
 async def get_specific_supplier(supplier_id: int):
     response = await Supplier_Pydantic.from_queryset_single(Supplier.get(id = supplier_id))
     return {"status": "ok", "data": response}
+
 
 
 # Updates the supplier based on the supplier_id passed in the URL
@@ -106,11 +109,15 @@ async def add_product(supplier_id: int, products_details: ProductIn_Pydantic):
     return {"status": "ok", "data": response}
 
 
+
+
 # Gets all products from teh database by queries all product objects
 @app.get("/products")
-async def get_products():
+async def get_all_products():
     response = await Product_Pydantic.from_queryset(Product.all())
     return {"status": "ok", "data": response}
+
+
 
 
 # Finds a specific product based on the product_id passed in the URL
@@ -118,6 +125,8 @@ async def get_products():
 async def specific_product(product_id: int):
     response = await Product_Pydantic.from_queryset_single(Product.get(id = product_id))
     return {"status": "ok", "data": response}
+
+
 
 
 # Updates a specific product based upon the product_id passed in url
@@ -137,11 +146,16 @@ async def update_product(product_id: int, update_info: ProductIn_Pydantic):
     return {"status": "ok", "data": response}
 
 
+
+
 # Deletes specific product based on the product_id passed in the URL with delete query
 @app.delete('/product/{product_id}')
 async def delete_product(product_id: int):
     await Product.filter(id = product_id).delete()
     return {"status": "ok"}
+
+
+
 
 
 # Database setup using sqlite database used locally, has built in error handling and ORM exceptions
@@ -154,9 +168,12 @@ register_tortoise(
 )
 
 
+
+
+
 # Template rendering for ProductSuppliers.html that will display all suppliers and products from the database
 @app.get("/ProductSuppliers")
-async def ProductSuppliers(request: Request):
+async def Product_Suppliers(request: Request):
     suppliers = await Supplier_Pydantic.from_queryset(Supplier.all())
     products = await Product_Pydantic.from_queryset(Product.all())
     return templates.TemplateResponse(

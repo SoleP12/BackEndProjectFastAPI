@@ -12,6 +12,7 @@
 
 4-  uvicorn app:app --reload
 
+
 This particular Project is designed to understand the fundamentals, constraints, and strengths of using FastAPI as a significant part of a developement project simulating real-world developement. 
 
 Technologies Used ======================================================
