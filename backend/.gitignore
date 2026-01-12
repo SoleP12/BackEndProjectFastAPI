@@ -2,7 +2,5 @@
 .env
 venv
 
-
-
 # SQLite
 db.sqlite3*
