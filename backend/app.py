@@ -20,6 +20,13 @@ app = FastAPI(
 #Returns the parent directory of the current file we use this to point to frontend files
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Mount static files directory to serve CSS and JS files
+app.mount(
+    "/static",
+    StaticFiles(directory=BASE_DIR / "frontend" / "static"),
+    name="static",
+)
+
 
 # Create templates variable to point to the templates directory using BASE_DIR
 templates = Jinja2Templates(directory=BASE_DIR / "frontend" / "templates")
