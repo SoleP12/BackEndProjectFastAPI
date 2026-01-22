@@ -11,7 +11,7 @@ from tortoise.contrib.fastapi import register_tortoise
 from models import Supplier_Pydantic, SupplierIn_Pydantic, Supplier, Product_Pydantic, ProductIn_Pydantic, Product
 
 
-# FastAPI app initialization with custom CSS for Swagger UI
+# FastAPI app initialization with Custom Title
 app = FastAPI(
     title="Supplier and Product Management API" 
 )
